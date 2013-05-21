@@ -18,15 +18,15 @@ print "Resolution of Image :", im.shape[0], "x", im.shape[1]
 cv2.namedWindow('window', cv2.CV_WINDOW_AUTOSIZE)
 cv2.createTrackbar("foo", "window", 0, 255, onChange)
 
-camera = cv2.VideoCapture(0)
-f,im = camera.read()
-imhsv = cv2.cvtColor(im, cv2.CV_RGB2HSV)
+#camera = cv2.VideoCapture(0)
+#f,im = camera.read()
+#imhsv = cv2.cvtColor(im, cv2.CV_RGB2HSV)
 #removeRed(im)
 #removeBlue(im)
-cv2.imshow('window', im)
-print "RBG:", im
-print "HSV:", imhsv
-cv2.waitKey(0)
+#cv2.imshow('window', im)
+#print "RBG:", im
+#print "HSV:", imhsv
+#cv2.waitKey(0)
 
 
 
