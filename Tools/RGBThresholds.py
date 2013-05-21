@@ -1,75 +1,91 @@
+#set argument to camera to use webcam image.  update image with TOOL TakeWebcamImage.py
+#To use webcam, run command: python RGBThresholds.py camera
+#Otherwise, it will use the default plant image
+
 import cv2
+import sys
 import numpy as np
 import math
 
-whiteThreshold = 100
+redL, redH, greenL, greenH, blueL, blueH= 0,0,0,0,0,0
 
-PI = 3.1415926
+def redLchange(value):
+	global redL
+	redL = value
+	if redL > redH:
+		print "Invalid Value: redL > redH"
+	else:
+		updateImage()
+	
+def redHchange(value):
+	global redH
+	redH = value
+	if redH < redL:
+		print "Invalid Value: redH > redL"
+	else:
+		updateImage()
 
-#Height of Camera (inches)
-height_of_camera = 7
-#Distance of plant (inches)
-distance_of_plant = 25
-#Camera Field Of View (degrees)
-camera_FOV = 52
-im = cv2.imread("Plant.jpg")
-print "Resolution of Image :", im.shape[0], "x", im.shape[1]
+def greenLchange(value):
+	global greenL
+	greenL = value
+	if greenL > greenH:
+		print "Invalid Value: greenL > greenH"
+	else:
+		updateImage()
+
+def greenHchange(value):
+	global greenH
+	greenH = value
+	if greenH < greenL:
+		print "Invalid Value: greenH < greenL"
+	else:
+		updateImage()
+
+def blueLchange(value):
+	global blueL
+	blueL = value
+	if blueL > blueH:
+		print "Invalid Value: blueL > blueH"
+	else:
+		updateImage()
+
+def blueHchange(value):
+	global blueH
+	blueH = value
+	if blueH < blueL:
+		print "Invalid Value: blueH > blueL"
+	else:
+		updateImage()
+
+def updateImage():
+	print "Updating Image"
+	COLOR_MIN = np.array([redL, blueL, greenL], np.uint8)
+	COLOR_MAX = np.array([redH, blueH, greenH], np.uint8)
+	no_white = cv2.inRange(im, COLOR_MIN, COLOR_MAX)
+	cv2.imshow('window', no_white)
+
+if len(sys.argv) == 2 and sys.argv[1] == 'camera':
+	print len(sys.argv),sys.argv[1]
+	im = cv2.imread("../Images/Webcam.png")
+	print im
+	if im == None:
+		im = cv2.imread("../Images/Plant.jpg")
+else:
+	im = cv2.imread("../Images/Plant.jpg")
+
 cv2.namedWindow('window', cv2.CV_WINDOW_AUTOSIZE)
-#Show Original Image
+
+cv2.createTrackbar("Red Low", "window", 0, 255, redLchange)
+cv2.createTrackbar("Red High", "window", 0, 255, redHchange)
+
+cv2.createTrackbar("Green Low", "window", 0, 255, greenLchange)
+cv2.createTrackbar("Green High", "window", 0, 255, greenHchange)
+
+cv2.createTrackbar("Blue Low", "window", 0, 255, blueLchange)
+cv2.createTrackbar("Blue High", "window", 0, 255, blueHchange)
+
 cv2.imshow('window', im)
 cv2.waitKey(0)
-#removeWhite
-print "noWhite"
-print type(im)
-COLOR_MIN = np.array([whiteThreshold, whiteThreshold, whiteThreshold], np.uint8)
-COLOR_MAX = np.array([255, 255, 255], np.uint8)
-print type((whiteThreshold, whiteThreshold, whiteThreshold))
-no_white = cv2.inRange(im, COLOR_MIN, COLOR_MAX)
-#no_white = whiteFilter(im)
-cv2.imshow('window', no_white)
-cv2.waitKey(0)
-#Convert Image to gray and isolate darker colors
-#gray = cv2.cvtColor(no_white, cv2.COLOR_BGR2GRAY)
-#cv2.imshow('window', gray)
-#cv2.waitKey(0)
-#Isolate out darker colors
-#out = cv2.threshold(no_white, 1, 255, cv2.THRESH_BINARY_INV)[1]
-#cv2.imshow('window', out)
-#cv2.waitKey(0)
-#Find the biggest blob and isolate it out
-contours,hierarchy = cv2.findContours(no_white,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
-mask = np.zeros(no_white.shape, np.uint8)
-largest_contour = 0  
-i = 0
-for contour in contours:
-	if len(contour) > largest_contour:
-		largest_contour = i
-	i+=1
-			
-cv2.drawContours(mask,[contours[largest_contour]],-1,(255),-1)
-cv2.imshow('window', mask)
-
-#Determine Plant Pixel Height
-#By grabbing all the values that includes the plant
-#LargestValue - SmallestValue = Plant Height (Pixels)
-yVals = []
-maskT = cv2.transpose(mask)
-for y in range(maskT.shape[0]):	
-	if any(maskT[y]):
-		yVals.append(y)
-yVals.sort()
-
-#Print out calculations
-print "Plant Distance(in) :", distance_of_plant
-print "yHigh =",yVals[-1],"; yLow =",yVals[0]
-plant_height_pixels = yVals[-1]-yVals[0]
-print "Plant Height(pixels) :", plant_height_pixels
-#Calculations to figure out height (inches) per pixel
-screen_height_inches = 2*distance_of_plant*math.tan(camera_FOV*(PI/180)/2)
-screen_height_pixels = im.shape[1]
-height_per_pixel = screen_height_inches/screen_height_pixels
-print "Plant Height(inches) :", plant_height_pixels*height_per_pixel+7
-
 
 cv2.waitKey(0)
 cv2.destroyAllWindows()

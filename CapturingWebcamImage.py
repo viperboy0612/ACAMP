@@ -22,8 +22,6 @@ camera = cv2.VideoCapture(0)
 i = 0
 for i in range(10):
 	f,im = camera.read()
-#removeRed(im)
-#removeBlue(im)
 cv2.imshow('window', im)
 print im.shape
 cv2.waitKey(0)
@@ -33,7 +31,6 @@ cv2.waitKey(0)
 distance_of_plant = 28
 #Camera Field Of View (degrees)
 camera_FOV = 60
-#im = cv2.imread("Plant.jpg")
 print "Resolution of Image :", im.shape[0], "x", im.shape[1]
 #Show Original Image
 cv2.imshow('window', im)

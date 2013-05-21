@@ -42,7 +42,6 @@ print contours[1]
 cv2.imshow('window', mask)
 #cv.WaitKey(3000)
 #print type(im)
-#cv.SaveImage("foo.png", out)
 #cv.CreateTrackbar("Channel", "window", 0, 255, on_track)
 #cv.CreateTrackbar("Channel2", "window", 0, 255, on_track)
 #cv.CreateTrackbar("Contours", "window", 0, 255, on_contour)
