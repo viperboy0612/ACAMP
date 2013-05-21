@@ -2,31 +2,17 @@ import cv2
 import numpy as np
 import math
 
+whiteThreshold = 100
+
 PI = 3.1415926
 
-def removeRed(array):
-	for row in range(480):
-		for column in range(640):
-			array[row, column, 0] = 0
-
-def removeBlue(array):
-	for row in range(480):
-		for column in range(640):
-			array[row, column, 2] = 0
-
-#CREATE WINDOW
-cv2.namedWindow('window', cv2.CV_WINDOW_AUTOSIZE)
-
-#TESTING WEBCAME IMAGE CAPTURE
-camera = cv2.VideoCapture(0)
-i = 0
-for i in range(10):
-	f,im = camera.read()
-#removeRed(im)
-#removeBlue(im)
-cv2.imshow('window', im)
-print im.shape
-cv2.waitKey(0)
+#def whiteFilter(im):
+#	for row in range(480):
+#		for col in range(640):
+#			if im[row,col,0] > whiteThreshold and im[row,col,1] > whiteThreshold and im[row,col,2] > whiteThreshold:
+#				for i in range(3):
+#					im[row,col,i] = 0
+#	return im
 
 
 #Distance of plant (inches)
@@ -35,20 +21,31 @@ distance_of_plant = 28
 camera_FOV = 60
 #im = cv2.imread("Plant.jpg")
 print "Resolution of Image :", im.shape[0], "x", im.shape[1]
+#cv2.namedWindow('window', cv2.CV_WINDOW_AUTOSIZE)
 #Show Original Image
-cv2.imshow('window', im)
-cv2.waitKey(0)
+#cv2.imshow('window', im)
+#cv2.waitKey(0)
+#removeWhite
+print "noWhite"
+print type(im)
+COLOR_MIN = np.array([whiteThreshold, whiteThreshold, whiteThreshold], np.uint8)
+COLOR_MAX = np.array([255, 255, 255], np.uint8)
+print type((whiteThreshold, whiteThreshold, whiteThreshold))
+no_white = cv2.inRange(im, COLOR_MIN, COLOR_MAX)
+#no_white = whiteFilter(im)
+#cv2.imshow('window', no_white)
+#cv2.waitKey(0)
 #Convert Image to gray and isolate darker colors
-gray = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
-cv2.imshow('window', gray)
-cv2.waitKey(0)
+#gray = cv2.cvtColor(no_white, cv2.COLOR_BGR2GRAY)
+#cv2.imshow('window', gray)
+#cv2.waitKey(0)
 #Isolate out darker colors
-out = cv2.threshold(gray, 100, 255, cv2.THRESH_BINARY_INV)[1]
-cv2.imshow('window', out)
-cv2.waitKey(0)
+#out = cv2.threshold(no_white, 1, 255, cv2.THRESH_BINARY_INV)[1]
+#cv2.imshow('window', out)
+#cv2.waitKey(0)
 #Find the biggest blob and isolate it out
-contours,hierarchy = cv2.findContours(out,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
-mask = np.zeros(out.shape, np.uint8)
+contours,hierarchy = cv2.findContours(no_white,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
+mask = np.zeros(no_white.shape, np.uint8)
 largest_contour = 0  
 i = 0
 for contour in contours:
@@ -57,17 +54,16 @@ for contour in contours:
 	i+=1
 			
 cv2.drawContours(mask,[contours[largest_contour]],-1,(255),-1)
-cv2.imshow('window', mask)
+#cv2.imshow('window', mask)
 
 #Determine Plant Pixel Height
 #By grabbing all the values that includes the plant
 #LargestValue - SmallestValue = Plant Height (Pixels)
 yVals = []
-for y in range(mask.shape[1]):
-	for x in range(mask.shape[0]):
-		if mask[x][y] != 0:
-			yVals.append(y)
-			break
+maskT = cv2.transpose(mask)
+for y in range(maskT.shape[0]):	
+	if any(maskT[y]):
+		yVals.append(y)
 yVals.sort()
 
 #Print out calculations
@@ -81,4 +77,5 @@ screen_height_pixels = im.shape[1]
 height_per_pixel = screen_height_inches/screen_height_pixels
 print "Plant Height(inches) :", plant_height_pixels*height_per_pixel
 
-cv2.waitKey(0)
+#cv2.waitKey(0)
+cv2.destroyAllWindows()
