@@ -72,7 +72,8 @@ if len(sys.argv) == 2 and sys.argv[1] == 'camera':
 		im = cv2.imread("../Images/Plant.jpg")
 else:
 	im = cv2.imread("../Images/Plant.jpg")
-
+cv2.namedWindow('original', cv2.CV_WINDOW_AUTOSIZE)
+cv2.imshow('original', im)
 cv2.namedWindow('window', cv2.CV_WINDOW_AUTOSIZE)
 
 cv2.createTrackbar("Red Low", "window", 0, 255, redLchange)
@@ -85,7 +86,5 @@ cv2.createTrackbar("Blue Low", "window", 0, 255, blueLchange)
 cv2.createTrackbar("Blue High", "window", 0, 255, blueHchange)
 
 cv2.imshow('window', im)
-cv2.waitKey(0)
-
 cv2.waitKey(0)
 cv2.destroyAllWindows()
