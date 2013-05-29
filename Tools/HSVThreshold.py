@@ -37,9 +37,21 @@ def saturationHchange(value):
 		updateImage()
 
 def valueLchange(value):
-	print "valueLchange"
+	global valL
+	valL = value
+	if valL > valH:
+		print "Invalid Value: valL > valH"
+	else:
+		updateImage()
+
 def valueHchange(value):
-	print "valueHchange"
+	global valH
+	valH = value
+	if valH < valL:
+		print "Invalid Value: valH > valL"
+	else:
+		updateImage()
+
 
 def updateImage():
 	print "Updating Image"
@@ -50,17 +62,23 @@ def updateImage():
         COLOR_MIN = np.array([hueL, satL, 0], np.uint8)
         COLOR_MAX = np.array([hueH, satH, 255], np.uint8)
 	filtered_sat = cv2.inRange(img, COLOR_MIN, COLOR_MAX)
-	cv2.imshow('saturation', filtered_saturation)
+	cv2.imshow('saturation', filtered_sat)
+        COLOR_MIN = np.array([hueL, satL, valL], np.uint8)
+        COLOR_MAX = np.array([hueH, satH, valH], np.uint8)
+	filtered_val = cv2.inRange(img, COLOR_MIN, COLOR_MAX)
+	cv2.imshow('value', filtered_val)
 
-img = cv2.imread("../Images/WebcamImage100.png",cv2.CV_LOAD_IMAGE_COLOR)  ## Read image file
+img = cv2.imread("../Images/Webcam.png",cv2.CV_LOAD_IMAGE_COLOR)  ## Read image file
 cv2.namedWindow('original')        ## create original for display
 cv2.namedWindow('originalhsv')
 cv2.namedWindow('hsv')
 cv2.namedWindow('saturation')
+cv2.namedWindow('value')
 hsv = cv2.cvtColor(img,cv2.COLOR_BGR2HSV)
 cv2.imshow('original',img)         ## Show image in the original
 cv2.imshow('hsv', hsv)
 cv2.imshow('saturation', hsv)
+cv2.imshow('value', hsv)
 cv2.imshow('originalhsv', hsv)
 cv2.createTrackbar("Hue Low", "original", 0, 179, hueLchange)
 cv2.createTrackbar("Hue High", "original", 0, 179, hueHchange)
