@@ -10,23 +10,23 @@ import math
 
 def getCameraData():
 	#values for fake plant
-	hueL, hueH = 28, 90
-	satL, satH = 30, 75
-	valL, valH = 0, 65
+	hueL, hueH = 60, 73
+	satL, satH = 56, 71
+	valL, valH = 0, 53
 
 	DEBUG = 0
 	
-	min_height = 4
-	#Height of Camera (inches)
-	height_of_camera = 7
+	min_height = 4.39
+	#Height of Camera (inches) FROM top of base
+	height_of_camera = 14.5
 	#Distance of plant (inches)
-	distance_of_plant = 22
+	distance_of_plant = 21.5
 	#Camera Field Of View (degrees)
 	camera_FOV = 52
-	#im = cv2.imread("Images/Webcam.png")
-	camera = cv2.VideoCapture(0)
-	for i in xrange(30):
-		retval, im = camera.read()
+	im = cv2.imread("Images/Webcam.png")
+	#camera = cv2.VideoCapture(0)
+	#for i in xrange(30):
+	#	retval, im = camera.read()
 	if DEBUG:
 		cv2.namedWindow('window', cv2.CV_WINDOW_AUTOSIZE)
 		#Show Original Image
@@ -48,7 +48,7 @@ def getCameraData():
 			largest_contour = i
 		i+=1
 			
-	cv2.drawContours(mask,[contours[largest_contour-1]],-1,(255),-1)
+	cv2.drawContours(mask,[contours[largest_contour]],-1,(255),-1)
 	if DEBUG:
 		cv2.imshow('window', mask)
 		cv2.waitKey(0)	
