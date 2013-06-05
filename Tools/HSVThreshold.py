@@ -55,16 +55,16 @@ def valueHchange(value):
 
 def updateImage():
 	print "Updating Image"
-        COLOR_MIN = np.array([hueL, 0, 0], np.uint8)
-        COLOR_MAX = np.array([hueH, 255, 255], np.uint8)
-        filtered_hsv = cv2.inRange(img, COLOR_MIN, COLOR_MAX)
-        cv2.imshow('hsv', filtered_hsv)
-        COLOR_MIN = np.array([hueL, satL, 0], np.uint8)
-        COLOR_MAX = np.array([hueH, satH, 255], np.uint8)
+	COLOR_MIN = np.array([hueL, 0, 0], np.uint8)
+	COLOR_MAX = np.array([hueH, 255, 255], np.uint8)
+	filtered_hsv = cv2.inRange(img, COLOR_MIN, COLOR_MAX)
+	cv2.imshow('hsv', filtered_hsv)
+	COLOR_MIN = np.array([hueL, satL, 0], np.uint8)
+	COLOR_MAX = np.array([hueH, satH, 255], np.uint8)
 	filtered_sat = cv2.inRange(img, COLOR_MIN, COLOR_MAX)
 	cv2.imshow('saturation', filtered_sat)
-        COLOR_MIN = np.array([hueL, satL, valL], np.uint8)
-        COLOR_MAX = np.array([hueH, satH, valH], np.uint8)
+	COLOR_MIN = np.array([hueL, satL, valL], np.uint8)
+	COLOR_MAX = np.array([hueH, satH, valH], np.uint8)
 	filtered_val = cv2.inRange(img, COLOR_MIN, COLOR_MAX)
 	cv2.imshow('value', filtered_val)
 
